@@ -1,0 +1,99 @@
+---
+title: "Team"
+author: "Karthikcharan Suresh"
+partner: "Christian Simmons"
+date: "10/3/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+getwd()
+## Background
+
+The General Social Survey (GSS) has been run by NORC every other year since 1972 to keep track of current opinions across the United States. We are working with an excerpt of the dataset that covers years 1972 to 2016. The variable names along with a brief description are as follows: 
+
+| Variable      | Description   |    
+| ------------- |:-------------:| 
+| Year          | Year for this respondent | 
+| Age           | Age of respondent | 
+| Sex           | Sex of respondent     | 
+|....           | .....      | 
+
+Now it's important to understand what each column stands for. You can find a codebook with explanations for each of the variables at https://gssdataexplorer.norc.org/
+
+
+
+##  Data Cleaning 
+
+ 
+```{r}
+hap <- readRDS("HAPPY.rds")
+```
+```{r}
+names(hap) = tolower(names(hap))
+```
+
+
+Initial exploration revealed that some data processing was needed before we could proceed with further visualization. All missing values were encoded with 'NA' as follows:
+
+1.
+```{r}
+library(dplyr)
+happydf<-data.frame(hap)
+happydf<-na_if(happydf,"IAP")
+happydf<-na_if(happydf,"DK")
+happydf<-na_if(happydf,"NA")
+head(happydf)
+sum(is.na(happydf))
+```
+
+In total there were 36391 number of missing values for the following 11 variables. 
+
+2.
+Variables were also cast into the correct type in order to ease data visualization. This was done by:
+```{r}
+sapply(happydf,class)
+cols<-c("happy","sex","marital","degree","finrela","health","partyid","polviews")
+happydf[cols]<-lapply(happydf[cols], factor)
+sapply(happydf,class)
+happydf$age[happydf$age=="89 OR OLDER"]<-89
+happydf$age=as.numeric(happydf$age)
+sapply(happydf,class)
+```
+
+3.
+Factors were also organized into meaningful order as follows: 
+```{r}
+happydf<-arrange(happydf,year,age,sex,marital,degree,finrela,health,partyid,polviews)
+head(happydf)
+```
+
+
+##  Data Exploration 
+
+1.
+Two variables of interest are Happiness Levels and Degree. Their distributions are as follow: 
+```{r}
+library(ggplot2)
+ggplot(data=happydf,aes(happydf$happy))+geom_bar(fill="red",stat="count")+labs(x="Happiness Level",y="Count",title="Bar Plot of Happiness Levels")+theme(axis.text.x = element_text(angle = 90))
+```
+The plot is uniform or symmetrical, majority of the people are in the center as plot is densed in the center which says they are happy and not too happy nor very happy.
+
+
+```{r}
+ggplot(data=happydf,aes(x=factor(degree,level=c('NA','LT HIGH SCHOOL','HIGH SCHOOL','JUNIOR COLLEGE','BACHELOR','GRADUATE'))))+geom_bar(fill="red",stat="count")+labs(x="Degree Type",y="Count",title="Bar plot of Education Degrees Recieved")+theme(axis.text.x = element_text(angle = 90))
+```
+The plot is not uniform more people tend to have smaller high school degrees and less likely to have a higher degree like a graduate degree, so it right skewed.
+
+
+```{r}
+ggplot(happydf,aes(x=factor(degree,level=c('NA','LT HIGH SCHOOL','HIGH SCHOOL','JUNIOR COLLEGE','BACHELOR','GRADUATE')),fill=happy))+geom_bar(position="fill")+theme(axis.text.x = element_text(angle = 90))+labs(x="Degree Type",y="Count",title="Happiness by Degree Type")
+ggplot(happydf,aes(health,fill=happy))+geom_bar(position="fill")+theme(axis.text.x = element_text(angle = 90))+labs(x="Health Condition",y="Count",title="Happiness by Health")
+ggplot(happydf,aes(x=factor(marital,level=c('NEVER MARRIED','MARRIED','SEPARATED','DIVORCED','WIDOWED')),fill=happy))+geom_bar(position="fill")+theme(axis.text.x = element_text(angle = 90))+labs(x="Marital Status",y="Count",title="Happiness by Marital Status")
+```
+From the happiness data set we where able to see the response variable of how happy people are with respect to different explanatory variable. we found various relationships of happiness like college degree level, which was positively corelated, with halth it was positively corelated. with being married it was moderately corelated. 
+
+
+
