@@ -87,12 +87,13 @@ ggplot(data=happydf,aes(x=factor(degree,level=c('NA','LT HIGH SCHOOL','HIGH SCHO
 ```
 The plot is not uniform more people tend to have smaller high school degrees and less likely to have a higher degree like a graduate degree, so it right skewed.
 
-
+2.
 ```{r}
 ggplot(happydf,aes(x=factor(degree,level=c('NA','LT HIGH SCHOOL','HIGH SCHOOL','JUNIOR COLLEGE','BACHELOR','GRADUATE')),fill=happy))+geom_bar(position="fill")+theme(axis.text.x = element_text(angle = 90))+labs(x="Degree Type",y="Count",title="Happiness by Degree Type")
 ggplot(happydf,aes(health,fill=happy))+geom_bar(position="fill")+theme(axis.text.x = element_text(angle = 90))+labs(x="Health Condition",y="Count",title="Happiness by Health")
 ggplot(happydf,aes(x=factor(marital,level=c('NEVER MARRIED','MARRIED','SEPARATED','DIVORCED','WIDOWED')),fill=happy))+geom_bar(position="fill")+theme(axis.text.x = element_text(angle = 90))+labs(x="Marital Status",y="Count",title="Happiness by Marital Status")
 ```
+3.
 From the happiness data set we where able to see the response variable of how happy people are with respect to different explanatory variable. we found various relationships of happiness like college degree level, which was positively corelated, with halth it was positively corelated. with being married it was moderately corelated. 
 
 
